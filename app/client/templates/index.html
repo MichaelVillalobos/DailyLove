@@ -1,0 +1,48 @@
+<html>
+<head>
+<style>
+body {
+    background-color: #FFCCCC;
+}
+a:link {
+    text-decoration: none;
+}
+a:visited {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;   
+}
+a:active {
+    text-decoration: none;
+}
+.red {
+    color: #FFFFFF;
+    margin: 10 10 10 10;
+    padding: 10 10 10 10;
+    background-color: #FF6666;
+}
+.blue {
+    color: #FFFFFF;
+    margin: 10 10 10 10;
+    padding: 10 10 10 10;
+    background-color: #0000FF;
+}
+.green {
+    color: #FFFFFF;
+    margin: 10 10 10 10;
+    padding: 10 10 10 10;
+    background-color: #559955;
+}
+</style>
+</head>
+<body>
+<center>
+<h2>Mikey Loves Alley!</h2>
+<h4>Choose a message...</h4>
+<a href={{url_for('selected', type='red')}} class='red'>Red</a>
+<a href={{url_for('selected', type='blue')}} class='blue'>Blue</a><br><br><br>
+<a href={{url_for('selected', type='green')}} class='green'>Green</a>
+</center>
+</body>
+</html>

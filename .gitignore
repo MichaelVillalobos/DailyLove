@@ -1,0 +1,5 @@
+*.py[co]
+
+# vagrant
+.vagrant/
+main_site/cgi-bin/
