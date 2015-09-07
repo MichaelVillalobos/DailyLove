@@ -1,2 +1,1 @@
-valentines-day project
 # DailyLove

@@ -1,9 +1,11 @@
+import json
 from datetime import datetime
 
-from flask import g, jsonify
+from flask import g
+from flask import current_app
 from redis import StrictRedis
 
-from .exceptions import HTTPError
+from app.exceptions import HTTPError
 
 
 class Notes(object):
@@ -11,9 +13,9 @@ class Notes(object):
     def __init__(self):
         # initialize redis here
         redis_args = {
-            'host': 'pub-redis-14032.us-east-1-1.1.ec2.garantiadata.com',
-            'password': '#P5958401',
-            'port': 14032
+            'host': current_app.config['redis']['host'],
+            'password': current_app.config['redis']['password'],
+            'port': current_app.config['redis']['port']
         }
         self.redis = StrictRedis(**redis_args)
 
@@ -41,16 +43,32 @@ class Notes(object):
         else:
             return []
 
-    def add_note(self, type, note):
-        if type in self.keys:
-            if not self.redis.sismember(self.check_keys[type], note.lower()):
-                self.redis.sadd(self.keys[type], note)
-                self.redis.sadd(self.check_keys[type], note.lower())
-                return {'result': 'success'}
-            else:
-                return {'result': 'error', 'err': 'message already in key'}
-        else:
-            raise HTTPError(403, 'invalid note type')
+    def add_notes(self, notes):
+        with self.redis.pipeline() as pipe:
+            for type, note_list in notes.iteritems():
+                for note in note_list:
+                    pipe.sadd(self.keys[type], note)
+                    pipe.sadd(self.check_keys[type], note.lower())
+            pipe.execute()
+
+    def validate_notes(self, notes):
+        checked_notes = []
+        with self.redis.pipeline() as pipe:
+            for type, note_list in notes.iteritems():
+                for note in note_list:
+                    if type in self.keys:
+                        checked_notes.append(note)
+                        pipe.sismember(self.check_keys[type], note.lower())
+                    else:
+                        raise HTTPError(403, 'invalid note type')
+            results = pipe.execute()
+        err_notes = []
+        for i, result in enumerate(results):
+            if result == 1:
+                err_notes.append(checked_notes[i])
+        if err_notes != "":
+            err_message = "Some notes already exist."
+            raise HTTPError(403, {'message': err_message, 'notes': err_notes})
 
     def modify_note(self, type, old_note, new_note):
         if type in self.keys:
@@ -80,15 +98,22 @@ class Notes(object):
                     'note': note,
                     'type': type
                 }
-                self.redis.set(self.todays_note_key, jsonify(note_value))
-                self.redis.delete_note(note)
-                return note
+                self.redis.set(self.todays_note_key, json.dumps(note_value))
+                self.delete_note(type, note)
+                return Note(**note_value)
             else:
                 return None
         else:
-            return self.redis.get(self.todays_note_key)
+            note = self.redis.get(self.todays_note_key)
+            return Note(**json.loads(note))
 
     def get_previous_notes(self):
         previous_keys = self.redis.keys(self.previous_notes_key)
         previous_notes = self.redis.mget(previous_keys)
         return previous_notes
+
+
+class Note(object):
+    def __init__(self, note, type):
+        self.note = note
+        self.type = type

@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask.ext.classy import FlaskView, route
 
 from app.exceptions import HTTPError
-from app.objects import Notes
+from app.models.notes import Notes
 
 
 class NotesView(FlaskView):
@@ -16,8 +16,10 @@ class NotesView(FlaskView):
         if not json:
             raise HTTPError(400, 'Invalid request type')
 
-        response = Notes().add_note(**json)
-        return jsonify(response)
+        notes = Notes()
+        notes.validate_notes(json)
+        notes.add_notes(json)
+        return jsonify()
 
     def put(self):
         json = request.get_json(silent=True)

@@ -1,14 +1,24 @@
-from flask import Flask, g, render_template
+from flask import Flask, g, jsonify, render_template
+
+from yamlsettings import YamlSettings
 
 from app.api.notes import NotesView
-from .objects import Notes
+from app.exceptions import HTTPError
+from app.models.notes import Notes
 
 
 def create_app(config=None):
     app = Flask(
         __name__,
-        template_folder='client/templates',
-        static_folder='client/static')
+        template_folder='../client/templates',
+        static_folder='../client/static')
+
+    app.config.update(
+        YamlSettings(
+            'app/configs.yml',
+            'app/configs.yml',
+            default_section='Config'
+        ).get_settings())
 
     @app.before_request
     def before_request():
@@ -24,6 +34,7 @@ def create_app(config=None):
 
     @app.route('/')
     def index():
+        print 'index'
         note = Notes()
         todays_note = note.get_todays_note()
         if not todays_note:
@@ -31,8 +42,8 @@ def create_app(config=None):
         else:
             return render_template(
                 'selected.html',
-                color=note.type,
-                message=note.note
+                color=todays_note.type,
+                message=todays_note.note
             )
 
     @app.route('/selected/<type>')
@@ -51,8 +62,17 @@ def create_app(config=None):
         return render_template(
             'selected.html',
             color=colors[type],
-            message=message
+            message=message,
+            has_message=todays_note is not None
         )
+
+    @app.errorhandler(HTTPError)
+    def http_error(e):
+        error_body = {
+            'error': e.message,
+        }
+
+        return jsonify(error_body), e.status_code
 
     return app
 

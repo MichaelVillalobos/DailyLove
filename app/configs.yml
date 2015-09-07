@@ -1,0 +1,5 @@
+Config:
+    redis:
+        host: pub-redis-15189.us-east-1-4.6.ec2.redislabs.com
+        password: '#P5958401'
+        port: 15189
