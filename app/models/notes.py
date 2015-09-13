@@ -1,5 +1,6 @@
 import json
-from datetime import datetime
+import pytz
+from datetime import datetime, time
 
 from flask import g
 from flask import current_app
@@ -31,7 +32,9 @@ class Notes(object):
         }
 
         self.todays_note_key = '{user_id}:notes:{date}'.format(
-            user_id=g.user_id, date=datetime.today().strftime('%y%m%d'))
+            user_id=g.user_id, date=datetime.combine(
+                datetime.now(pytz.timezone('US/Pacific')).date(), time())
+            .strftime('%y%m%d'))
 
         self.previous_notes_key = '{user_id}:notes:*'.format(
             user_id=g.user_id)
