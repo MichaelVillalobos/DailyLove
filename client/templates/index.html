@@ -11,38 +11,49 @@ a:visited {
     text-decoration: none;
 }
 a:hover {
-    text-decoration: none;   
+    text-decoration: none;
 }
 a:active {
     text-decoration: none;
 }
+.option {
+    margin-bottom:20px;
+    font-size: 32px;
+}
 .red {
     color: #FFFFFF;
-    margin: 10 10 10 10;
-    padding: 10 10 10 10;
     background-color: #FF6666;
 }
 .blue {
     color: #FFFFFF;
-    margin: 10 10 10 10;
-    padding: 10 10 10 10;
     background-color: #0000FF;
 }
 .green {
     color: #FFFFFF;
-    margin: 10 10 10 10;
-    padding: 10 10 10 10;
     background-color: #559955;
+}
+.centered-box {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom:0;
+    right:0;
+    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%);
+    transform: translateX(-50%);
+    text-align: center;
 }
 </style>
 </head>
 <body>
-<center>
+<div class="centered-box">
 <h2>Mikey Loves Alley!</h2>
 <h4>Choose a message...</h4>
-<a href={{url_for('selected', type='red')}} class='red'>Red</a>
-<a href={{url_for('selected', type='blue')}} class='blue'>Blue</a><br><br><br>
-<a href={{url_for('selected', type='green')}} class='green'>Green</a>
-</center>
+<div class="option"><a href={{url_for('selected', type='red')}} class='red'>Red - Message Of Love</a></div>
+<div class="option"><a href={{url_for('selected', type='blue')}} class='blue'>Blue - Songs And Lyrics</a></div>
+<div class="option"><a href={{url_for('selected', type='green')}} class='green'>Green - Memories</a></div>
+</div>
 </body>
 </html>
