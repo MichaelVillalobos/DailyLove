@@ -3,6 +3,10 @@
 <style>
 body {
     background-color: #FFCCCC;
+    background-image: url('http://1.bp.blogspot.com/-Vy_ptwkK1JE/ThY4bbqFFdI/AAAAAAAAAsI/e9FJnBibZ28/s1600/mason4.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 300px 550px;
 }
 a:link {
     text-decoration: none;
@@ -17,20 +21,36 @@ a:active {
     text-decoration: none;
 }
 .option {
-    margin-bottom:20px;
+    position: relative;
+    margin-bottom: 20px;
     font-size: 32px;
+    width: 130px;
+    height: 130px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.bottom {
+    margin-bottom: 0px;
 }
 .red {
-    color: #FFFFFF;
     background-color: #FF6666;
 }
 .blue {
-    color: #FFFFFF;
     background-color: #0000FF;
 }
 .green {
-    color: #FFFFFF;
     background-color: #559955;
+}
+.white-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #FFFFFF;
+    transform: translateY(-50%) translateX(-50%)
+}
+.title {
+    margin-bottom: 30px;
+    font-size: 48px;
 }
 .centered-box {
     width: 100%;
@@ -39,21 +59,27 @@ a:active {
     bottom:0;
     right:0;
     margin: auto;
-    top: 50%;
-    left: 50%;
-    transform: translateY(-50%);
-    transform: translateX(-50%);
     text-align: center;
 }
+.centered-box .contents {
+    position: relative;
+    top: 50%;
+    transform: translateY(-60%);
+}
+.heart-image {
+    height:32px;
+    width:32px;
+}
+
 </style>
 </head>
-<body>
 <div class="centered-box">
-<h2>Mikey Loves Alley!</h2>
-<h4>Choose a message...</h4>
-<div class="option"><a href={{url_for('selected', type='red')}} class='red'>Red - Message Of Love</a></div>
-<div class="option"><a href={{url_for('selected', type='blue')}} class='blue'>Blue - Songs And Lyrics</a></div>
-<div class="option"><a href={{url_for('selected', type='green')}} class='green'>Green - Memories</a></div>
+<div class="title"><img class="heart-image" src="http://www.clipartbest.com/cliparts/yTo/gke/yTogkeqTE.png"></img>Daily Love Notes<img class="heart-image" src="http://www.clipartbest.com/cliparts/yTo/gke/yTogkeqTE.png"></img></div>
+<div class="contents">
+<div class="option red"><a href={{url_for('selected', type='red')}} class="white-text">Message Of Love</a></div>
+<div class="option blue"><a href={{url_for('selected', type='blue')}} class="white-text">Songs And Lyrics</a></div>
+<div class="option green"><a href={{url_for('selected', type='green')}} class='white-text'>Memories</a></div>
+</div>
 </div>
 </body>
 </html>
