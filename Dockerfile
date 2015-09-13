@@ -28,4 +28,4 @@ EXPOSE 8000
 
 CMD ["gunicorn", "--access-logfile=-", "--error-logfile=-", \
      "--bind=0.0.0.0:8000", "--workers=6", "--timeout=120", \
-     "--reload app:create_app()"]
+     "--reload app:app"]
