@@ -34,17 +34,16 @@ def create_app(config=None):
 
     @app.route('/')
     def index():
-        print 'index'
         note = Notes()
         todays_note = note.get_todays_note()
-        if not todays_note:
-            return render_template('index.html')
-        else:
-            return render_template(
-                'selected.html',
-                color=todays_note.type,
-                message=todays_note.note
-            )
+        counts = note.get_notes_count()
+        return render_template(
+            'index.html',
+            red=counts['red'],
+            blue=counts['blue'],
+            green=counts['green'],
+            note=todays_note
+        )
 
     @app.route('/selected/<type>')
     def selected(type):

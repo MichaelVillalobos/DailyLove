@@ -39,6 +39,14 @@ class Notes(object):
         self.previous_notes_key = '{user_id}:notes:*'.format(
             user_id=g.user_id)
 
+    def get_notes_count(self):
+        with self.redis.pipeline() as pipe:
+            pipe.scard(self.keys['red'])
+            pipe.scard(self.keys['blue'])
+            pipe.scard(self.keys['green'])
+            results = pipe.execute()
+        return {'red': results[0], 'blue': results[1], 'green': results[2]}
+
     def get_color(self, type):
         if type in self.keys:
             notes = self.redis.smembers(self.keys[type])
@@ -69,7 +77,7 @@ class Notes(object):
         for i, result in enumerate(results):
             if result == 1:
                 err_notes.append(checked_notes[i])
-        if err_notes != "":
+        if err_notes:
             err_message = "Some notes already exist."
             raise HTTPError(403, {'message': err_message, 'notes': err_notes})
 
